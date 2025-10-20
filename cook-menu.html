@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cook Menu - Order & Pay</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #ff6347;
+            font-weight: 700;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .back-btn, .cart-btn, .orders-btn {
+            background: #ff6347;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .cart-btn {
+            background: #28a745;
+        }
+        
+        .orders-btn {
+            background: #007bff;
+        }
+        
+        .cart-count, .orders-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .cook-profile {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .cook-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cook-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff6347;
+            margin-right: 2rem;
+        }
+        
+        .cook-info h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cook-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            color: #ffd700;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .rating-text {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .cook-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6347;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .cook-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .specialty-tag {
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .menu-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .menu-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .menu-header h3 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            background: #f8f9fa;
+            border: 2px solid #eee;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .filter-tab.active {
+            background: #ff6347;
+            color: white;
+            border-color: #ff6347;
+        }
+        
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .dish-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .dish-card:hover {
+            border-color: #ff6347;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .dish-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+        
+        .dish-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .dish-info {
+            flex: 1;
+        }
+        
+        .dish-info h4 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dish-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dish-rating .stars {
+            font-size: 1rem;
+        }
+        
+        .dish-price {
+            background: #ff6347;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .dish-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .dish-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .meta-item::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #ff6347;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .dish-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .qty-btn {
+            background: #ff6347;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .qty-display {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .add-to-cart-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .add-to-cart-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Cart Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+        
+        .cart-items {
+            margin-bottom: 2rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cart-item-cook {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cart-item-price {
+            color: #ff6347;
+            font-weight: 600;
+        }
+        
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .cart-summary {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-row.total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-top: 2px solid #dee2e6;
+            padding-top: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .checkout-form {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff6347;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .payment-method {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method.selected {
+            border-color: #ff6347;
+            background: #fff5f5;
+        }
+        
+        .place-order-btn {
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .place-order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,99,71,0.4);
+        }
+        
+        .place-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff6347;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error, .success {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            color: #666;
+            padding: 3rem;
+        }
+        
+        .empty-cart h3 {
+            color: #ff6347;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .cook-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cook-avatar {
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+            
+            .dishes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dish-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> HomeMeals Connect</h1>
+        <div class="header-actions">
+            <a href="cooks.html" class="back-btn">← Back to Cooks</a>
+            <button class="orders-btn" onclick="viewMyOrders()">
+                 My Orders
+                <span class="orders-count" id="ordersCount">0</span>
+            </button>
+            <button class="cart-btn" onclick="toggleCart()">
+                 Cart
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div id="loading" class="loading">
+             Loading cook's menu...
+        </div>
+        
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <!-- Cook Profile Section -->
+        <div id="cookProfile" class="cook-profile" style="display: none;">
+            <!-- Dynamically populated -->
+        </div>
+        
+        <!-- Menu Section -->
+        <div id="menuSection" class="menu-section" style="display: none;">
+            <div class="menu-header">
+                <h3 id="menuTitle">Menu</h3>
+                <p>Choose from our delicious homemade dishes</p>
+            </div>
+            
+            <div class="filter-tabs" id="filterTabs">
+                <div class="filter-tab active" data-filter="all">All Items</div>
+                <div class="filter-tab" data-filter="breakfast">Breakfast</div>
+                <div class="filter-tab" data-filter="lunch">Lunch</div>
+                <div class="filter-tab" data-filter="dinner">Dinner</div>
+                <div class="filter-tab" data-filter="snacks">Snacks</div>
+            </div>
+            
+            <div id="dishesGrid" class="dishes-grid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h2> Your Cart</h2>
+            
+            <div id="cartItems" class="cart-items">
+                <!-- Cart items will be populated here -->
+            </div>
+            
+            <div id="cartSummary" class="cart-summary" style="display: none;">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee:</span>
+                    <span id="deliveryFee">₹30</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (5%):</span>
+                    <span id="tax">₹0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span id="total">₹0</span>
+                </div>
+            </div>
+            
+            <div id="checkoutForm" style="display: none;">
+                <h3> Delivery Details</h3>
+                <form class="checkout-form">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="customerName" required placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="customerPhone" required placeholder="+91-9876543210">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email (Optional)</label>
+                        <input type="email" id="customerEmail" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Delivery Address *</label>
+                        <textarea id="customerAddress" required placeholder="Enter complete delivery address with landmarks" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Special Instructions</label>
+                        <textarea id="specialInstructions" placeholder="Any special cooking instructions or preferences" rows="2"></textarea>
+                    </div>
+                    
+                    <h3> Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method selected" data-method="Cash">
+                            <div> Cash on Delivery</div>
+                            <small>Pay when you receive</small>
+                        </div>
+                        <div class="payment-method" data-method="UPI">
+                            <div> UPI</div>
+                            <small>PhonePe, GPay, Paytm</small>
+                        </div>
+                        <div class="payment-method" data-method="Card">
+                            <div> Debit/Credit Card</div>
+                            <small>Visa, Mastercard</small>
+                        </div>
+                        <div class="payment-method" data-method="NetBanking">
+                            <div> Net Banking</div>
+                            <small>All major banks</small>
+                        </div>
+                    </div>
+                </form>
+                
+                <div id="orderError" class="error" style="display: none;"></div>
+                <div id="orderSuccess" class="success" style="display: none;"></div>
+                
+                <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">
+                     Place Order
+                </button>
+            </div>
+            
+            <div id="emptyCart" class="empty-cart">
+                <h3> Your cart is empty</h3>
+                <p>Add some delicious items from the menu!</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentCook = null;
+        let dishes = [];
+        let cart = [];
+        let quantities = {};
+        let selectedPaymentMethod = 'Cash';
+        
+        // Get cook email from URL parameters
+        function getCookEmailFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cookEmail = urlParams.get('cook');
+            console.log(' Cook email from URL:', cookEmail);
+            return cookEmail;
+        }
+        
+        // Load cook profile and dishes
+        async function loadCookData() {
+            const cookEmail = getCookEmailFromURL();
+            if (!cookEmail) {
+                showError('Cook not specified in URL. Please go back and select a cook.');
+                return;
+            }
+            
+            try {
+                console.log(' Loading data for cook:', cookEmail);
+                
+                // Load cook profile first
+                const cookResponse = await fetch(`http://localhost:5000/api/cooks/${encodeURIComponent(cookEmail)}`);
+                const cookData = await cookResponse.json();
+                
+                console.log(' Cook response:', cookData);
+                
+                if (cookResponse.ok && cookData.cook) {
+                    currentCook = cookData.cook;
+                    displayCookProfile(currentCook);
+                } else {
+                    showError(cookData.message || 'Failed to load cook profile');
+                    return;
+                }
+                
+                // Load cook's dishes
+                const dishesResponse = await fetch(`http://localhost:5000/api/cooks/${encodeURIComponent(cookEmail)}/dishes`);
+                const dishesData = await dishesResponse.json();
+                
+                console.log(' Dishes response:', dishesData);
+                
+                if (dishesResponse.ok) {
+                    dishes = dishesData.dishes || [];
+                    console.log(` Found ${dishes.length} dishes for ${currentCook.name}`);
+                    
+                    if (dishes.length > 0) {
+                        displayDishes(dishes);
+                        document.getElementById('menuSection').style.display = 'block';
+                        setupFilters();
+                    } else {
+                        showEmptyMenu();
+                    }
+                } else {
+                    showError(dishesData.error || 'Failed to load dishes');
+                }
+                
+            } catch (error) {
+                console.error(' Error loading cook data:', error);
+                showError('Unable to connect to server. Please check if the Flask server is running on port 5000.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        // Display cook profile
+        function displayCookProfile(cook) {
+            console.log(' Displaying cook profile:', cook.name);
+            const profileDiv = document.getElementById('cookProfile');
+            
+            const profilePicUrl = cook.profilePicUrl || `https://via.placeholder.com/100x100/ff6347/white?text=${cook.name.charAt(0)}`;
+            
+            profileDiv.innerHTML = `
+                <div class="cook-header">
+                    <img src="${profilePicUrl}" 
+                         alt="${cook.name}" class="cook-avatar" 
+                         onerror="this.src='https://via.placeholder.com/100x100/ff6347/white?text=${cook.name.charAt(0)}'">
+                    <div class="cook-info">
+                        <h2>${cook.name}</h2>
+                        <div class="cook-rating">
+                            <div class="stars">${generateStars(cook.averageRating || 0)}</div>
+                            <span class="rating-text">${cook.averageRating || 0}/5 (${cook.totalRatings || 0} reviews)</span>
+                        </div>
+                        <div class="cook-stats">
+                            <div class="stat">
+                                <div class="stat-number">${cook.experience || 0}</div>
+                                <div class="stat-label">Years Experience</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">${cook.totalOrders || 0}</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">${cook.deliveryRadius || 10}km</div>
+                                <div class="stat-label">Delivery Radius</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="cook-description">${cook.description || 'Passionate home cook ready to serve you delicious meals.'}</p>
+                
+                <div class="specialties">
+                    ${(cook.specialties || '').split(',').map(s => `<span class="specialty-tag">${s.trim()}</span>`).join('')}
+                </div>
+            `;
+            
+            profileDiv.style.display = 'block';
+            
+            // Update menu title
+            document.getElementById('menuTitle').textContent = `${cook.name}'s Menu`;
+        }
+        
+        // Display dishes
+        function displayDishes(dishesToShow) {
+            console.log(` Displaying ${dishesToShow.length} dishes`);
+            const grid = document.getElementById('dishesGrid');
+            
+            if (dishesToShow.length === 0) {
+                showEmptyMenu();
+                return;
+            }
+            
+            grid.innerHTML = dishesToShow.map(dish => {
+                const dishId = dish._id || dish.id || Math.random().toString(36).substr(2, 9);
+                const imageUrl = dish.imageUrl || 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop&crop=center';
+                
+                return `
+                    <div class="dish-card">
+                        <img src="${imageUrl}" 
+                             alt="${dish.name}" class="dish-image"
+                             onerror="this.src='https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop&crop=center'">
+                        
+                        <div class="dish-header">
+                            <div class="dish-info">
+                                <h4>${dish.name}</h4>
+                                <div class="dish-rating">
+                                    <div class="stars">${generateStars(dish.averageRating || 0)}</div>
+                                    <span class="rating-text">(${dish.totalRatings || 0})</span>
+                                </div>
+                            </div>
+                            <div class="dish-price">₹${dish.price}</div>
+                        </div>
+                        
+                        <p class="dish-description">${dish.description}</p>
+                        
+                        <div class="dish-meta">
+                            <div class="meta-item"> ${dish.category}</div>
+                            <div class="meta-item"> ${dish.spiceLevel}</div>
+                            <div class="meta-item"> ${dish.prepTime} mins</div>
+                            <div class="meta-item"> ${dish.cuisine}</div>
+                        </div>
+                        
+                        <div style="font-size: 0.85rem; color: #999; margin-bottom: 1rem;">
+                             Prepared by <strong>${dish.cookName}</strong>
+                        </div>
+                        
+                        <div class="dish-actions">
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="updateQuantity('${dishId}', -1)">-</button>
+                                <span class="qty-display" id="qty-${dishId}">1</span>
+                                <button class="qty-btn" onclick="updateQuantity('${dishId}', 1)">+</button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn" onclick="addToCart('${dishId}')" id="btn-${dishId}">
+                                 Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Initialize quantities
+            dishesToShow.forEach(dish => {
+                const dishId = dish._id || dish.id || Math.random().toString(36).substr(2, 9);
+                if (!quantities[dishId]) quantities[dishId] = 1;
+            });
+        }
+        
+        // Show empty menu message
+        function showEmptyMenu() {
+            const grid = document.getElementById('dishesGrid');
+            grid.innerHTML = `
+                <div class="empty-menu" style="grid-column: 1 / -1; text-align: center; color: #666; padding: 3rem;">
+                    <h3> Menu Coming Soon!</h3>
+                    <p><strong>${currentCook ? currentCook.name : 'This cook'}</strong> hasn't added any dishes yet. Please check back later.</p>
+                    <a href="cooks.html" style="
+                        display: inline-block;
+                        margin-top: 1rem;
+                        padding: 10px 20px;
+                        background: #ff6347;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 25px;
+                        font-weight: 600;
+                    ">Browse Other Cooks</a>
+                </div>
+            `;
+            document.getElementById('menuSection').style.display = 'block';
+            document.getElementById('menuTitle').textContent = `${currentCook.name}'s Menu (Coming Soon)`;
+        }
+        
+        // Generate star rating display
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            return '★'.repeat(fullStars) + 
+                   (hasHalfStar ? '☆' : '') + 
+                   '☆'.repeat(emptyStars);
+        }
+        
+        // Update quantity
+        function updateQuantity(dishId, change) {
+            if (!quantities[dishId]) quantities[dishId] = 1;
+            
+            quantities[dishId] += change;
+            if (quantities[dishId] < 1) quantities[dishId] = 1;
+            
+            const qtyDisplay = document.getElementById(`qty-${dishId}`);
+            if (qtyDisplay) {
+                qtyDisplay.textContent = quantities[dishId];
+            }
+        }
+        
+        // Add to cart
+        function addToCart(dishId) {
+            const quantity = quantities[dishId] || 1;
+            const dish = dishes.find(d => (d._id || d.id) === dishId);
+            
+            if (!dish) {
+                alert(' Dish not found');
+                return;
+            }
+            
+            // Check if item already in cart
+            const existingItem = cart.find(item => item.dishId === dishId);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    dishId: dishId,
+                    dish: dish,
+                    quantity: quantity
+                });
+            }
+            
+            updateCartDisplay();
+            
+            // Show success message
+            showCartNotification(` ${dish.name} added to cart!`);
+        }
+        
+        // Remove from cart
+        function removeFromCart(dishId) {
+            cart = cart.filter(item => item.dishId !== dishId);
+            updateCartDisplay();
+            displayCart();
+        }
+        
+        // Update cart quantity
+        function updateCartQuantity(dishId, change) {
+            const item = cart.find(item => item.dishId === dishId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(dishId);
+                } else {
+                    updateCartDisplay();
+                    displayCart();
+                }
+            }
+        }
+        
+        // Update cart display
+        function updateCartDisplay() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartCount;
+            }
+        }
+        
+        // Show cart notification
+        function showCartNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                z-index: 10000;
+                font-weight: 600;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                animation: slideInRight 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Toggle cart
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.style.display = 'block';
+            displayCart();
+        }
+        
+        // Close cart
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+        
+        // Display cart
+        function displayCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const checkoutForm = document.getElementById('checkoutForm');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            if (cart.length === 0) {
+                cartItems.style.display = 'none';
+                cartSummary.style.display = 'none';
+                checkoutForm.style.display = 'none';
+                emptyCart.style.display = 'block';
+                return;
+            }
+            
+            emptyCart.style.display = 'none';
+            cartItems.style.display = 'block';
+            cartSummary.style.display = 'block';
+            checkoutForm.style.display = 'block';
+            
+            // Display cart items
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.dish.imageUrl || 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=60&h=60&fit=crop'}" 
+                         alt="${item.dish.name}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.dish.name}</div>
+                        <div class="cart-item-cook">by ${item.dish.cookName}</div>
+                        <div class="cart-item-price">₹${item.dish.price} each</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="qty-btn" onclick="updateCartQuantity('${item.dishId}', -1)">-</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button class="qty-btn" onclick="updateCartQuantity('${item.dishId}', 1)">+</button>
+                        <button class="qty-btn" onclick="removeFromCart('${item.dishId}')" style="background: #dc3545; margin-left: 0.5rem;">×</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Calculate totals
+            const subtotal = cart.reduce((total, item) => total + (item.dish.price * item.quantity), 0);
+            const deliveryFee = subtotal > 500 ? 0 : 30; // Free delivery above ₹500
+            const tax = Math.round(subtotal * 0.05); // 5% tax
+            const total = subtotal + deliveryFee + tax;
+            
+            document.getElementById('subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('deliveryFee').textContent = deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`;
+            document.getElementById('tax').textContent = `₹${tax}`;
+            document.getElementById('total').textContent = `₹${total}`;
+        }
+        
+        // Setup payment method selection
+        function setupPaymentMethods() {
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', () => {
+                    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                    method.classList.add('selected');
+                    selectedPaymentMethod = method.dataset.method;
+                });
+            });
+        }
+        
+        // Place order
+        async function placeOrder() {
+            if (cart.length === 0) {
+                alert(' Your cart is empty!');
+                return;
+            }
+            
+            // Validate form
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            const customerAddress = document.getElementById('customerAddress').value.trim();
+            
+            if (!customerName || !customerPhone || !customerAddress) {
+                showOrderError(' Please fill in all required fields');
+                return;
+            }
+            
+            const customerEmail = document.getElementById('customerEmail').value.trim();
+            const specialInstructions = document.getElementById('specialInstructions').value.trim();
+            
+            // Calculate totals
+            const subtotal = cart.reduce((total, item) => total + (item.dish.price * item.quantity), 0);
+            const deliveryFee = subtotal > 500 ? 0 : 30;
+            const tax = Math.round(subtotal * 0.05);
+            const total = subtotal + deliveryFee + tax;
+            
+            // Prepare order data
+            const orderData = {
+                customerName,
+                customerPhone,
+                customerAddress,
+                customerEmail,
+                items: cart.map(item => ({
+                    dishId: item.dishId,
+                    dishName: item.dish.name,
+                    cookName: item.dish.cookName,
+                    price: item.dish.price,
+                    quantity: item.quantity
+                })),
+                totalAmount: subtotal,
+                deliveryFee,
+                tax,
+                paymentMethod: selectedPaymentMethod,
+                specialInstructions,
+                estimatedDelivery: '30-45 mins'
+            };
+            
+            // Show loading
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.textContent = ' Placing Order...';
+            
+            try {
+                // Create order
+                const response = await fetch('http://localhost:5000/api/orders/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    const orderId = result.orderId;
+                    
+                    // Process payment
+                    const paymentResponse = await fetch('http://localhost:5000/api/payment/process', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            orderId,
+                            paymentMethod: selectedPaymentMethod,
+                            amount: total
+                        })
+                    });
+                    
+                    const paymentResult = await paymentResponse.json();
+                    
+                    if (paymentResponse.ok) {
+                        showOrderSuccess(` Order placed successfully! Order ID: ${orderId}`);
+                        
+                        // Clear cart
+                        cart = [];
+                        updateCartDisplay();
+                        
+                        // Redirect to order status after 3 seconds
+                        setTimeout(() => {
+                            window.location.href = `order-status.html?orderId=${orderId}`;
+                        }, 3000);
+                    } else {
+                        showOrderError(` Payment failed: ${paymentResult.message}`);
+                    }
+                } else {
+                    showOrderError(` Order failed: ${result.message}`);
+                }
+            } catch (error) {
+                showOrderError(' Network error. Please try again.');
+                console.error('Order error:', error);
+            } finally {
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = ' Place Order';
+            }
+        }
+        
+        // Show order error/success
+        function showOrderError(message) {
+            const errorDiv = document.getElementById('orderError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('orderSuccess').style.display = 'none';
+            setTimeout(() => errorDiv.style.display = 'none', 5000);
+        }
+        
+        function showOrderSuccess(message) {
+            const successDiv = document.getElementById('orderSuccess');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('orderError').style.display = 'none';
+        }
+        
+        // View my orders
+        function viewMyOrders() {
+            const phone = prompt('Enter your phone number to view orders:');
+            if (phone) {
+                window.location.href = `my-orders.html?phone=${encodeURIComponent(phone)}`;
+            }
+        }
+        
+        // Setup filter functionality
+        function setupFilters() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const filter = tab.dataset.filter;
+                    filterDishes(filter);
+                    
+                    // Update active tab
+                    document.querySelectorAll('.filter-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                });
+            });
+        }
+        
+        // Filter dishes by category
+        function filterDishes(category) {
+            const filteredDishes = category === 'all' ? dishes : 
+                dishes.filter(dish => dish.category.toLowerCase() === category.toLowerCase());
+            displayDishes(filteredDishes);
+        }
+        
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <h3> Oops! Something went wrong</h3>
+                <p>${message}</p>
+                <div style="margin-top: 1rem;">
+                    <button onclick="location.reload()" style="
+                        background: #ff6347;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        margin-right: 1rem;
+                        cursor: pointer;
+                    ">Try Again</button>
+                    <a href="cooks.html" style="
+                        background: #6c757d;
+                        color: white;
+                        text-decoration: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                    ">Back to Cooks</a>
+                </div>
+            `;
+            errorDiv.style.display = 'block';
+        }
+        
+        // Initialize page
+        window.addEventListener('load', () => {
+            console.log(' Cook menu page loaded');
+            console.log(' URL:', window.location.href);
+            loadCookData();
+            setupPaymentMethods();
+        });
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        // Debug: Log URL parameters
+        console.log(' URL Parameters:', new URLSearchParams(window.location.search).toString());
+    </script>
+</body>
+</html>

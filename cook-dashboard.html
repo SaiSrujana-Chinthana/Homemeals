@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cook Dashboard - Food Image Upload</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #ff6347;
+            font-weight: 700;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #ff6347;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .cook-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff6347;
+            margin-right: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .dishes-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+        
+        .add-dish-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .add-dish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .upload-multiple-btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+        }
+        
+        .upload-multiple-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+        
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .dish-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .dish-card:hover {
+            border-color: #ff6347;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .dish-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .dish-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .dish-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ff6347;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dish-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .dish-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .dish-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-toggle {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        .btn-upload-image {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-small:hover {
+            transform: translateY(-2px);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 3% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6347;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .image-upload {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .image-upload:hover {
+            border-color: #ff6347;
+            background: #fff5f5;
+        }
+        
+        .image-upload.drag-over {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+        
+        .image-preview {
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .image-preview img {
+            max-width: 300px;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #ff6347;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .multiple-images-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .multiple-images-preview img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ff6347;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,99,71,0.3);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+            color: #ff6347;
+            font-weight: 600;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff6347;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message, .success-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+        
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .file-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .file-info h4 {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .file-list li {
+            padding: 0.25rem 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .file-list li::before {
+            content: '📁 ';
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .dishes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cook-avatar {
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> Food Image Upload Dashboard</h1>
+        <div class="header-actions">
+            <a href="cooks.html" class="btn btn-secondary">View My Menu</a>
+            <a href="index.html" class="btn btn-primary">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="welcome-section">
+                <img src="http://localhost:5000/static/profiles/boy1.jpg" alt="Cook Avatar" class="cook-avatar" id="cookAvatar">
+                <div>
+                    <h2 id="cookName">Welcome, Chef Arjun Singh!</h2>
+                    <p id="cookSpecialties">Punjabi, Tandoor, Street Food, Parathas</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDishes">0</div>
+                    <div class="stat-label">Total Dishes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalOrders">245</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="averageRating">4.6</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRatings">134</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- My Dishes Section -->
+            <div class="dishes-section">
+                <div class="section-header">
+                    <h3 class="section-title">My Food Items</h3>
+                    <div>
+                        <button class="add-dish-btn" onclick="openAddDishModal()">
+                             Add Single Dish
+                        </button>
+                        <button class="upload-multiple-btn" onclick="openMultipleUploadModal()">
+                             Upload Multiple Food Images
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="dishesGrid" class="dishes-grid">
+                    <!-- Dishes will be loaded here -->
+                </div>
+                
+                <div id="emptyDishes" class="empty-dishes" style="display: none;">
+                    <h3> No dishes added yet!</h3>
+                    <p>Start building your menu by uploading food images and adding dish details.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Dish Modal -->
+    <div id="dishModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDishModal()">&times;</span>
+            <h2 id="modalTitle">Add New Dish with Food Image</h2>
+            
+            <div class="error-message" id="dishError"></div>
+            <div class="success-message" id="dishSuccess"></div>
+            
+            <form id="dishForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label> Food Photo (Required)</label>
+                    <div class="image-upload" onclick="document.getElementById('dishImageInput').click()" 
+                         ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+                        <input type="file" name="dishImage" accept="image/*" id="dishImageInput" 
+                               style="display: none;" onchange="previewDishImage()" required>
+                        <p><strong> Click to select or drag & drop food image</strong></p>
+                        <small>JPG, PNG, GIF, WebP (max 10MB)</small>
+                        <br><small> Take a photo or  Upload from computer</small>
+                    </div>
+                    <div class="image-preview" id="dishImagePreview"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dish Name</label>
+                    <input type="text" name="name" required placeholder="e.g., Butter Chicken, Masala Dosa">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" required placeholder="Describe ingredients, cooking style, taste..." rows="3"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" name="price" required min="1" placeholder="150">
+                    </div>
+                    <div class="form-group">
+                        <label>Prep Time (minutes)</label>
+                        <input type="number" name="prepTime" required min="1" placeholder="30">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category" required>
+                            <option value="">Select category</option>
+                            <option value="Breakfast"> Breakfast</option>
+                            <option value="Lunch"> Lunch</option>
+                            <option value="Dinner"> Dinner</option>
+                            <option value="Snacks"> Snacks</option>
+                            <option value="Dessert"> Dessert</option>
+                            <option value="Beverages"> Beverages</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cuisine Type</label>
+                        <input type="text" name="cuisine" required placeholder="e.g., Punjabi, South Indian">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Spice Level</label>
+                        <select name="spiceLevel" required>
+                            <option value="">Select spice level</option>
+                            <option value="None"> None (Mild)</option>
+                            <option value="Mild"> Mild</option>
+                            <option value="Medium"> Medium</option>
+                            <option value="High"> High</option>
+                            <option value="Very High"> Very High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Calories (optional)</label>
+                        <input type="number" name="calories" min="0" placeholder="350">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Vegetarian Dish?</label>
+                    <select name="isVegetarian" required>
+                        <option value="">Select option</option>
+                        <option value="true"> Yes, it's vegetarian</option>
+                        <option value="false"> No, it contains meat/fish</option>
+                    </select>
+                </div>
+                
+                <input type="hidden" name="cookEmail" value="arjun@homemeals.com" id="cookEmailInput">
+                
+                <div class="loading" id="dishLoading"> Uploading food image and details...</div>
+                
+                <button type="submit" class="submit-btn" id="dishSubmitBtn"> Add Dish to Menu</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Multiple Upload Modal -->
+    <div id="multipleUploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMultipleUploadModal()">&times;</span>
+            <h2> Upload Multiple Food Images</h2>
+            <p>Select multiple food images to upload at once. You can add details for each dish later.</p>
+            
+            <div class="error-message" id="multipleError"></div>
+            <div class="success-message" id="multipleSuccess"></div>
+            
+            <div class="form-group">
+                <label>Select Food Images</label>
+                <div class="image-upload" onclick="document.getElementById('multipleImagesInput').click()"
+                     ondragover="handleMultipleDragOver(event)" ondrop="handleMultipleDrop(event)">
+                    <input type="file" multiple accept="image/*" id="multipleImagesInput" 
+                           style="display: none;" onchange="previewMultipleImages()">
+                    <p><strong> Click to select multiple food images</strong></p>
+                    <small>Hold Ctrl/Cmd to select multiple files</small>
+                    <br><small>JPG, PNG, GIF, WebP (max 10MB each)</small>
+                </div>
+            </div>
+            
+            <div id="multipleImagesPreview" class="multiple-images-preview"></div>
+            
+            <div id="fileInfo" class="file-info" style="display: none;">
+                <h4>Selected Files:</h4>
+                <ul id="fileList" class="file-list"></ul>
+            </div>
+            
+            <div class="loading" id="multipleLoading"> Uploading multiple food images...</div>
+            
+            <button onclick="uploadMultipleImages()" class="submit-btn" id="multipleSubmitBtn" disabled>
+                Upload All Food Images
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let currentCook = {
+            name: 'Arjun Singh',
+            email: 'arjun@homemeals.com',
+            profilePicUrl: 'http://localhost:5000/static/profiles/boy1.jpg'
+        };
+        let dishes = [];
+        let editingDishId = null;
+        let selectedFiles = [];
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
+        
+        // Load dashboard data
+        async function loadDashboard() {
+            document.getElementById('cookEmailInput').value = currentCook.email;
+            await loadDishes();
+        }
+        
+        // Load cook's dishes
+        async function loadDishes() {
+            try {
+                const response = await fetch(`http://localhost:5000/api/cooks/${encodeURIComponent(currentCook.email)}/dishes`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    dishes = data.dishes || [];
+                    displayDishes();
+                    document.getElementById('totalDishes').textContent = dishes.length;
+                } else {
+                    console.error('Error loading dishes:', data.error);
+                    dishes = [];
+                    displayDishes();
+                }
+            } catch (error) {
+                console.error('Error loading dishes:', error);
+                dishes = [];
+                displayDishes();
+            }
+        }
+        
+        // Display dishes
+        function displayDishes() {
+            const grid = document.getElementById('dishesGrid');
+            const emptyDiv = document.getElementById('emptyDishes');
+            
+            if (dishes.length === 0) {
+                grid.style.display = 'none';
+                emptyDiv.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyDiv.style.display = 'none';
+            
+            grid.innerHTML = dishes.map(dish => `
+                <div class="dish-card">
+                    <img src="${dish.imageUrl || 'https://via.placeholder.com/350x200/ff6347/white?text=Food+Image'}" 
+                         alt="${dish.name}" class="dish-image"
+                         onerror="this.src='https://via.placeholder.com/350x200/ff6347/white?text=Food+Image'">
+                    
+                    <div class="dish-name">${dish.name}</div>
+                    <div class="dish-price">₹${dish.price}</div>
+                    <div class="dish-description">${dish.description}</div>
+                    
+                    <div class="dish-meta">
+                        <span> ${dish.category}</span>
+                        <span> ${dish.spiceLevel}</span>
+                        <span>  ${dish.prepTime}min</span>
+                    </div>
+                    
+                    <div class="dish-actions">
+                        <button class="btn-small btn-upload-image" onclick="uploadNewImage('${dish._id}')"> Change Image</button>
+                        <button class="btn-small btn-edit" onclick="editDish('${dish._id}')"> Edit</button>
+                        <button class="btn-small btn-delete" onclick="deleteDish('${dish._id}')"> Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Open add dish modal
+        function openAddDishModal() {
+            editingDishId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Dish with Food Image';
+            document.getElementById('dishSubmitBtn').textContent = ' Add Dish to Menu';
+            document.getElementById('dishForm').reset();
+            document.getElementById('dishImagePreview').innerHTML = '';
+            clearMessages();
+            document.getElementById('dishModal').style.display = 'block';
+        }
+        
+        // Open multiple upload modal
+        function openMultipleUploadModal() {
+            document.getElementById('multipleUploadModal').style.display = 'block';
+            document.getElementById('multipleImagesPreview').innerHTML = '';
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('multipleSubmitBtn').disabled = true;
+            clearMessages('multiple');
+        }
+        
+        // Close modals
+        function closeDishModal() {
+            document.getElementById('dishModal').style.display = 'none';
+            clearMessages();
+        }
+        
+        function closeMultipleUploadModal() {
+            document.getElementById('multipleUploadModal').style.display = 'none';
+            selectedFiles = [];
+            clearMessages('multiple');
+        }
+        
+        // Drag and drop functionality
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('drag-over');
+        }
+        
+        function handleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('dishImageInput').files = files;
+                previewDishImage();
+            }
+        }
+        
+        function handleMultipleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('drag-over');
+        }
+        
+        function handleMultipleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('multipleImagesInput').files = files;
+                previewMultipleImages();
+            }
+        }
+        
+        // Preview single dish image
+        function previewDishImage() {
+            const file = document.getElementById('dishImageInput').files[0];
+            const preview = document.getElementById('dishImagePreview');
+            
+            if (file) {
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('dishError', 'Image size should be less than 10MB');
+                    document.getElementById('dishImageInput').value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Food Preview">
+                        <p style="margin-top: 0.5rem; color: #28a745; font-weight: 600;">
+                             ${file.name} ready to upload (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </p>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+        
+        // Preview multiple images
+        function previewMultipleImages() {
+            const files = document.getElementById('multipleImagesInput').files;
+            const preview = document.getElementById('multipleImagesPreview');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileList = document.getElementById('fileList');
+            const submitBtn = document.getElementById('multipleSubmitBtn');
+            
+            if (files.length === 0) {
+                preview.innerHTML = '';
+                fileInfo.style.display = 'none';
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            selectedFiles = Array.from(files);
+            preview.innerHTML = '';
+            fileList.innerHTML = '';
+            
+            // Show file info
+            fileInfo.style.display = 'block';
+            
+            selectedFiles.forEach((file, index) => {
+                // Validate file size
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('multipleError', `${file.name} is too large. Max size: 10MB`);
+                    return;
+                }
+                
+                // Create image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    img.title = file.name;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+                
+                // Add to file list
+                const li = document.createElement('li');
+                li.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                fileList.appendChild(li);
+            });
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = ` Upload ${selectedFiles.length} Food Images`;
+        }
+        
+        // Upload multiple images
+        async function uploadMultipleImages() {
+            if (selectedFiles.length === 0) {
+                showError('multipleError', 'Please select images to upload');
+                return;
+            }
+            
+            document.getElementById('multipleLoading').style.display = 'block';
+            document.getElementById('multipleSubmitBtn').disabled = true;
+            clearMessages('multiple');
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                const formData = new FormData();
+                
+                // Create basic dish data from filename
+                const dishName = file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, ' ');
+                const capitalizedName = dishName.replace(/\w\S*/g, (txt) => 
+                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+                
+                formData.append('cookEmail', currentCook.email);
+                formData.append('name', capitalizedName);
+                formData.append('description', `Delicious ${capitalizedName} prepared with love and authentic ingredients.`);
+                formData.append('price', '150'); // Default price
+                formData.append('category', 'Lunch'); // Default category
+                formData.append('cuisine', 'Home Style'); // Default cuisine
+                formData.append('prepTime', '30'); // Default prep time
+                formData.append('spiceLevel', 'Medium'); // Default spice level
+                formData.append('isVegetarian', 'true'); // Default vegetarian
+                formData.append('calories', '300'); // Default calories
+                formData.append('dishImage', file);
+                
+                try {
+                    const response = await fetch('http://localhost:5000/api/dishes/add', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                        console.error(`Failed to upload ${file.name}`);
+                    }
+                } catch (error) {
+                    errorCount++;
+                    console.error(`Error uploading ${file.name}:`, error);
+                }
+            }
+            
+            document.getElementById('multipleLoading').style.display = 'none';
+            
+            if (successCount > 0) {
+                showSuccess('multipleSuccess', 
+                    ` Successfully uploaded ${successCount} food images! ${errorCount > 0 ? `(${errorCount} failed)` : ''}`
+                );
+                
+                setTimeout(() => {
+                    closeMultipleUploadModal();
+                    loadDishes(); // Reload dishes
+                }, 2000);
+            } else {
+                showError('multipleError', ' Failed to upload images. Please try again.');
+                document.getElementById('multipleSubmitBtn').disabled = false;
+            }
+        }
+        
+        // Handle dish form submission
+        document.getElementById('dishForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearMessages();
+            
+            const formData = new FormData(this);
+            
+            // Validate image upload
+            const imageInput = document.getElementById('dishImageInput');
+            if (!imageInput.files[0] && !editingDishId) {
+                showError('dishError', 'Please upload a food image');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('dishLoading').style.display = 'block';
+            document.getElementById('dishSubmitBtn').disabled = true;
+            
+            try {
+                let response;
+                if (editingDishId) {
+                    // Update existing dish (without image for now)
+                    const data = {};
+                    formData.forEach((value, key) => {
+                        if (key !== 'dishImage') data[key] = value;
+                    });
+                    
+                    response = await fetch(`http://localhost:5000/api/dishes/${editingDishId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Add new dish
+                    response = await fetch('http://localhost:5000/api/dishes/add', {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('dishSuccess', result.message);
+                    setTimeout(() => {
+                        closeDishModal();
+                        loadDishes(); // Reload dishes
+                    }, 2000);
+                } else {
+                    showError('dishError', result.message);
+                }
+            } catch (error) {
+                showError('dishError', 'Network error. Please check if the server is running.');
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('dishLoading').style.display = 'none';
+                document.getElementById('dishSubmitBtn').disabled = false;
+            }
+        });
+        
+        // Edit dish
+        function editDish(dishId) {
+            const dish = dishes.find(d => d._id === dishId);
+            if (!dish) return;
+            
+            editingDishId = dishId;
+            document.getElementById('modalTitle').textContent = 'Edit Dish Details';
+            document.getElementById('dishSubmitBtn').textContent = 'Update Dish';
+            
+            // Fill form with dish data
+            document.querySelector('[name="name"]').value = dish.name;
+            document.querySelector('[name="description"]').value = dish.description;
+            document.querySelector('[name="price"]').value = dish.price;
+            document.querySelector('[name="prepTime"]').value = dish.prepTime;
+            document.querySelector('[name="category"]').value = dish.category;
+            document.querySelector('[name="cuisine"]').value = dish.cuisine;
+            document.querySelector('[name="spiceLevel"]').value = dish.spiceLevel;
+            document.querySelector('[name="calories"]').value = dish.calories || '';
+            document.querySelector('[name="isVegetarian"]').value = dish.isVegetarian.toString();
+            
+            // Show current image
+            if (dish.imageUrl) {
+                document.getElementById('dishImagePreview').innerHTML = `
+                    <img src="${dish.imageUrl}" alt="Current dish image">
+                    <p style="margin-top: 0.5rem; color: #666;">Current image (upload new to replace)</p>
+                `;
+            }
+            
+            clearMessages();
+            document.getElementById('dishModal').style.display = 'block';
+        }
+        
+        // Upload new image for existing dish
+        function uploadNewImage(dishId) {
+            // Implementation for uploading new image to existing dish
+            alert('Image replacement feature will be implemented soon!');
+        }
+        
+        // Delete dish
+        async function deleteDish(dishId) {
+            const dish = dishes.find(d => d._id === dishId);
+            if (!dish) return;
+            
+            if (!confirm(`Are you sure you want to delete "${dish.name}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/dishes/${dishId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    loadDishes(); // Reload dishes
+                    alert(' Dish deleted successfully!');
+                } else {
+                    alert(' Error deleting dish: ' + result.message);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+        
+        // Utility functions
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            setTimeout(() => {
+                successElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        function clearMessages(prefix = 'dish') {
+            document.querySelectorAll(`#${prefix}Error, #${prefix}Success`).forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                clearMessages();
+                clearMessages('multiple');
+            }
+        }
+    </script>
+</body>
+</html>

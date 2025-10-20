@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Cooks - HomeMeals Connect</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #ff6347;
+            font-weight: 700;
+        }
+        
+        .back-btn {
+            background: #ff6347;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,99,71,0.4);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .page-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+        
+        .page-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .page-title p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #ff6347;
+            border-color: #ff6347;
+            transform: translateY(-2px);
+        }
+        
+        .cooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+        
+        .cook-card {
+            background: white;
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cook-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,99,71,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .cook-card:hover::before {
+            left: 100%;
+        }
+        
+        .cook-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .cook-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .cook-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #ff6347;
+            margin-right: 1.5rem;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255,99,71,0.3);
+        }
+        
+        .cook-card:hover .cook-avatar {
+            transform: scale(1.05);
+        }
+        
+        .cook-info h3 {
+            color: #333;
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .cook-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .stars {
+            color: #ffd700;
+            margin-right: 0.8rem;
+            font-size: 1.1rem;
+        }
+        
+        .rating-text {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .cook-location {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cook-location::before {
+            content: '📍';
+            margin-right: 0.5rem;
+        }
+        
+        .cook-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat:hover {
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .stat-number {
+            font-weight: 700;
+            color: #ff6347;
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat:hover .stat-number {
+            color: white;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .stat:hover .stat-label {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .cook-details {
+            margin-bottom: 2rem;
+        }
+        
+        .cook-description {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .specialty-tag {
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .specialty-tag:hover {
+            transform: translateY(-2px);
+        }
+        
+        .cook-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            font-weight: 500;
+        }
+        
+        .meta-item::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #ff6347;
+            border-radius: 50%;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .view-menu-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #ff6347, #ff7f50);
+            color: white;
+            border: none;
+            padding: 1.3rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .view-menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .view-menu-btn:hover::before {
+            left: 100%;
+        }
+        
+        .view-menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255,99,71,0.4);
+        }
+        
+        .availability-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .available {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .unavailable {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.4rem;
+            margin: 4rem 0;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            text-align: center;
+            color: #ff6347;
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            margin: 3rem 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .no-cooks {
+            text-align: center;
+            color: white;
+            padding: 4rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .no-cooks h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .cooks-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .cook-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cook-avatar {
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+            
+            .cook-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .cook-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box {
+                margin-bottom: 1rem;
+            }
+            
+            .filter-buttons {
+                gap: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title h2 {
+                font-size: 2rem;
+            }
+            
+            .cook-card {
+                padding: 2rem;
+            }
+            
+            .cook-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> HomeMeals Connect</h1>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+    
+    <div class="container">
+        <div class="page-title">
+            <h2>Choose Your Perfect Cook</h2>
+            <p>Discover talented home cooks in your area and enjoy authentic, homemade delicious food</p>
+        </div>
+        
+        <!-- Search Section (Without Cuisine Filter Buttons) -->
+        <div class="search-section">
+            <input type="text" class="search-box" placeholder=" Search cooks by name, specialty, or location..." id="searchBox">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-specialty="all">All Cooks</button>
+                <button class="filter-btn" data-specialty="available">Available Now</button>
+                <button class="filter-btn" data-specialty="high-rated">Highly Rated (4.5+)</button>
+                <button class="filter-btn" data-specialty="experienced">Experienced (10+ years)</button>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            Loading amazing cooks for you...
+        </div>
+        
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="cooksGrid" class="cooks-grid"></div>
+    </div>
+    
+    <script>
+        let cooks = [];
+        let filteredCooks = [];
+        
+        // Fetch all cooks
+        async function loadCooks() {
+            try {
+                console.log(' Loading cooks from server...');
+                const response = await fetch('http://localhost:5000/api/cooks');
+                const data = await response.json();
+                
+                console.log(' Server response:', data);
+                
+                if (response.ok) {
+                    cooks = data.cooks || [];
+                    filteredCooks = [...cooks];
+                    displayCooks(filteredCooks);
+                } else {
+                    showError(data.message || 'Failed to load cooks');
+                }
+            } catch (error) {
+                console.error(' Error loading cooks:', error);
+                showError('Unable to connect to server. Please check if the Flask server is running on port 5000.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        // Display cooks in grid
+        function displayCooks(cooksToShow) {
+            const grid = document.getElementById('cooksGrid');
+            
+            if (cooksToShow.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-cooks">
+                        <h3>No cooks found</h3>
+                        <p>Try adjusting your search to find more amazing cooks.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = cooksToShow.map(cook => `
+                <div class="cook-card" onclick="viewCookMenu('${cook.email}')">
+                    <div class="availability-badge ${cook.isAvailable ? 'available' : 'unavailable'}">
+                        ${cook.isAvailable ? ' Available Now' : ' Currently Busy'}
+                    </div>
+                    
+                    <div class="cook-header">
+                        <img src="${cook.profilePicUrl || 'https://via.placeholder.com/100x100/ff6347/white?text=' + cook.name.charAt(0)}" 
+                             alt="${cook.name}" class="cook-avatar" 
+                             onerror="this.src='https://via.placeholder.com/100x100/ff6347/white?text=${cook.name.charAt(0)}'">
+                        <div class="cook-info">
+                            <h3>${cook.name}</h3>
+                            <div class="cook-rating">
+                                <div class="stars">${generateStars(cook.averageRating || 0)}</div>
+                                <span class="rating-text">${cook.averageRating || 0}/5 (${cook.totalRatings || 0} reviews)</span>
+                            </div>
+                            <div class="cook-location">${cook.address || 'Location not specified'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cook-stats">
+                        <div class="stat">
+                            <div class="stat-number">${cook.experience || 0}+</div>
+                            <div class="stat-label">Years Exp</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">${cook.totalOrders || 0}+</div>
+                            <div class="stat-label">Orders</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">${cook.deliveryRadius || 10}km</div>
+                            <div class="stat-label">Delivery</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cook-details">
+                        <p class="cook-description">${cook.description || 'Passionate home cook ready to serve you delicious, authentic meals made with love and the finest ingredients.'}</p>
+                        
+                        <div class="specialties">
+                            ${(cook.specialties || '').split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="specialty-tag">${s}</span>`).join('')}
+                        </div>
+                        
+                        <div class="cook-meta">
+                            <div class="meta-item"> ${cook.preparationTime || '30-45 mins'}</div>
+                            <div class="meta-item"> ${cook.phone || 'Contact available'}</div>
+                            <div class="meta-item"> Free delivery in ${cook.deliveryRadius || 10}km</div>
+                            <div class="meta-item"> Cash & Online payment</div>
+                        </div>
+                    </div>
+                    
+                    <button class="view-menu-btn" onclick="event.stopPropagation(); viewCookMenu('${cook.email}')">
+                         View Menu & Order Food
+                    </button>
+                </div>
+            `).join('');
+            
+            // Add loading animation
+            setTimeout(addLoadingAnimation, 100);
+        }
+        
+        // Generate star rating display
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            return '★'.repeat(fullStars) + 
+                   (hasHalfStar ? '☆' : '') + 
+                   '☆'.repeat(emptyStars);
+        }
+        
+        // Navigate to cook's menu
+        function viewCookMenu(cookEmail) {
+            if (!cookEmail) {
+                alert(' Cook email not found');
+                return;
+            }
+            
+            console.log(' Navigating to menu for cook:', cookEmail);
+            
+            // Add loading indicator
+            const loadingMsg = document.createElement('div');
+            loadingMsg.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.9);
+                color: white;
+                padding: 25px 50px;
+                border-radius: 15px;
+                z-index: 10000;
+                font-size: 1.2rem;
+                font-weight: 600;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            `;
+            loadingMsg.textContent = 'Loading delicious menu...';
+            document.body.appendChild(loadingMsg);
+            
+            // Navigate to cook's menu page
+            setTimeout(() => {
+                window.location.href = `cook-menu.html?cook=${encodeURIComponent(cookEmail)}`;
+            }, 800);
+        }
+        
+        // Search functionality
+        function setupSearch() {
+            const searchBox = document.getElementById('searchBox');
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                if (!searchTerm) {
+                    filteredCooks = [...cooks];
+                } else {
+                    filteredCooks = cooks.filter(cook => 
+                        cook.name.toLowerCase().includes(searchTerm) ||
+                        cook.specialties.toLowerCase().includes(searchTerm) ||
+                        cook.address.toLowerCase().includes(searchTerm) ||
+                        cook.description.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                displayCooks(filteredCooks);
+                
+                // Update active filter button
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector('[data-specialty="all"]').classList.add('active');
+            });
+        }
+        
+        // Filter functionality (Updated without cuisine filters)
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const specialty = btn.dataset.specialty;
+                    
+                    // Update active button
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Clear search
+                    document.getElementById('searchBox').value = '';
+                    
+                    // Apply filter
+                    if (specialty === 'all') {
+                        filteredCooks = [...cooks];
+                    } else if (specialty === 'available') {
+                        filteredCooks = cooks.filter(cook => cook.isAvailable);
+                    } else if (specialty === 'high-rated') {
+                        filteredCooks = cooks.filter(cook => (cook.averageRating || 0) >= 4.5);
+                    } else if (specialty === 'experienced') {
+                        filteredCooks = cooks.filter(cook => (cook.experience || 0) >= 10);
+                    }
+                    
+                    displayCooks(filteredCooks);
+                });
+            });
+        }
+        
+        // Add loading animation to cook cards
+        function addLoadingAnimation() {
+            const cards = document.querySelectorAll('.cook-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        }
+        
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <h3> Oops! Something went wrong</h3>
+                <p>${message}</p>
+                <button onclick="location.reload()" style="
+                    background: #ff6347;
+                    color: white;
+                    border: none;
+                    padding: 15px 25px;
+                    border-radius: 8px;
+                    margin-top: 1.5rem;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Try Again</button>
+            `;
+            errorDiv.style.display = 'block';
+        }
+        
+        // Initialize page
+        window.addEventListener('load', () => {
+            console.log(' Cooks page loaded');
+            loadCooks();
+            setupSearch();
+            setupFilters();
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('searchBox').blur();
+            }
+            
+            if (e.key === '/' && e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+                document.getElementById('searchBox').focus();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HomeMeals Connect</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: url('login.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    min-height: 100vh;
+  }
+
+  nav {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky; top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+  }
+  nav h2 {
+    color: black;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-shadow: none;
+  }
+  nav .nav-actions {
+    display: flex;
+    gap: 1rem;
+  }
+  nav .nav-actions button {
+    background: none;
+    border: 2px solid transparent;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  nav .nav-actions button:hover {
+    background: #ff6347;
+    color: white;
+    border-color: #ff6347;
+  }
+  .user-info {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    color: #333;
+    font-weight: 600;
+  }
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #ff6347;
+  }
+  main {
+    padding: 100px 20px 50px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  main h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  main p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+  }
+  button {
+    padding: 16px 40px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  button.primary {
+    background: linear-gradient(45deg, #ff6347, #ff7f50);
+    color: white;
+  }
+  button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,99,71,0.4);
+  }
+  button.secondary {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid white;
+    color: white;
+  }
+  button.secondary:hover {
+    background: white;
+    color: #333;
+  }
+  /* Hero Features Section */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 60px 0;
+    padding: 0 20px;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: transform 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  .feature-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+  .feature-card p {
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal.show { display: flex; }
+  .modal-content {
+    background: white;
+    color: #333;
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 550px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    overflow-y: auto;
+    max-height: 90vh;
+  }
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #ff6347;
+    font-weight: 700;
+  }
+  .modal-content label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid #eee;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+  .modal-content input:focus,
+  .modal-content select:focus,
+  .modal-content textarea:focus {
+    border-color: #ff6347;
+    outline: none;
+  }
+  .modal-content textarea {
+    resize: vertical;
+    height: 80px;
+  }
+  .modal-content button {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #ff6347, #ff7f50);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .modal-content button:hover {
+    transform: translateY(-2px);
+  }
+  .modal-content button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s ease;
+  }
+  .close-btn:hover {
+    color: #ff6347;
+  }
+  #howItWorks {
+    display: none;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 40px;
+    color: #333;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+  #howItWorks h2 {
+    color: #ff6347;
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: 700;
+    font-size: 2.2rem;
+  }
+  #howItWorks .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+  }
+  #howItWorks .step {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 2px solid transparent;
+  }
+  #howItWorks .step:hover {
+    transform: translateY(-5px);
+    border-color: #ff6347;
+  }
+  #howItWorks .step h3 {
+    margin-bottom: 15px;
+    color: #ff6347;
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+  #howItWorks .step p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #666;
+  }
+  .server-status {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 1000;
+    display: none;
+  }
+  .server-status.online {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  .server-status.offline {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  @media (max-width: 768px) {
+    main h1 {
+      font-size: 2rem;
+    }
+    nav .nav-actions {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    nav .nav-actions button {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+    .modal-content {
+      width: 95%;
+      padding: 30px 20px;
+    }
+    .features {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <h2> HomeMeals Connect</h2>
+  <div class="nav-actions">
+    <button onclick="navigateToCooks()" id="orderFoodBtn">Order Food</button>
+    <button onclick="toggleHowItWorks()" id="howItWorksBtn">How It Works</button>
+    <button id="btnRegister">Register</button>
+    <button id="btnLogin">Login</button>
+  </div>
+  <div class="user-info" id="userInfo">
+    <img id="userAvatar" class="user-avatar" src="" alt="User">
+    <span id="userName">User</span>
+    <button onclick="handleUserAction()" id="userActionBtn">Dashboard</button>
+    <button onclick="logout()" style="background: #dc3545; color: white;">Logout</button>
+  </div>
+</nav>
+
+<div class="server-status" id="serverStatus">
+   Checking server connection...
+</div>
+
+<main>
+  <h1>Fresh Home-Cooked Meals, Made With Love</h1>
+  <p>Connect with skilled home cooks in your neighborhood for authentic, homemade dishes</p>
+  
+  <div style="margin: 40px 0;">
+    <button class="primary" onclick="navigateToCooks()"> Order Food Now</button>
+    <button class="secondary" id="btnBecomeCook"> Become a Cook</button>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <h3> Authentic Home Cooking</h3>
+      <p>Enjoy traditional recipes made with love by local home cooks in your area</p>
+    </div>
+    <div class="feature-card">
+      <h3> Fresh & Fast Delivery</h3>
+      <p>Hot, fresh meals delivered right to your doorstep within 30-45 minutes</p>
+    </div>
+    <div class="feature-card">
+      <h3> Affordable Prices</h3>
+      <p>Get restaurant-quality food at home-cooked prices. No hidden charges</p>
+    </div>
+    <div class="feature-card">
+      <h3> Skilled Cooks</h3>
+      <p>Browse profiles of experienced home cooks and choose your favorite</p>
+    </div>
+    <div class="feature-card">
+      <h3> Easy Ordering</h3>
+      <p>Simple cook selection, menu browsing, and ordering process</p>
+    </div>
+    <div class="feature-card">
+      <h3> Secure Payments</h3>
+      <p>Multiple payment options with secure processing and order tracking</p>
+    </div>
+  </div>
+</main>
+
+<section id="howItWorks">
+  <h2>How It Works</h2>
+  <div class="steps">
+    <div class="step">
+      <h3>1. Browse Cooks</h3>
+      <p>Discover talented home cooks in your area with detailed profiles</p>
+    </div>
+    <div class="step">
+      <h3>2. View Menus</h3>
+      <p>Explore each cook's specialties and available dishes</p>
+    </div>
+    <div class="step">
+      <h3>3. Place Order</h3>
+      <p>Select your favorite dishes and choose your payment method</p>
+    </div>
+    <div class="step">
+      <h3>4. Enjoy Fresh Meals</h3>
+      <p>Get delicious homemade food delivered fresh to your doorstep</p>
+    </div>
+  </div>
+</section>
+
+<!-- Register Modal -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeRegister">&times;</span>
+    <h2>Create Account</h2>
+    <form id="registerForm">
+      <label>Full Name *</label>
+      <input type="text" name="name" required placeholder="Enter your full name" />
+      
+      <label>Email Address *</label>
+      <input type="email" name="email" required placeholder="Enter your email address" />
+      
+      <label>Phone Number *</label>
+      <input type="tel" name="phone" required placeholder="Enter your phone number" />
+      
+      <label>Address *</label>
+      <textarea name="address" required placeholder="Enter your full address"></textarea>
+      
+      <label>I am a *</label>
+      <select name="type" id="regType" required>
+        <option value="" disabled selected>Select your role</option>
+        <option value="customer"> Food Lover (Customer)</option>
+        <option value="cook"> Home Cook</option>
+      </select>
+      
+      <div id="cookFields" style="display:none;">
+        <label>Cooking Specialties *</label>
+        <textarea name="specialties" placeholder="e.g., North Indian, Chinese, Continental, Italian"></textarea>
+        
+        <label>Cooking Experience (years) *</label>
+        <input type="number" name="experience" min="0" max="50" placeholder="Years of cooking experience"/>
+      </div>
+      
+      <button type="submit" id="registerBtn">Create Account</button>
+    </form>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeLogin">&times;</span>
+    <h2>Welcome Back</h2>
+    <form id="loginForm">
+      <label>Email Address *</label>
+      <input type="email" name="email" required placeholder="Enter your email address" />
+      
+      <label>I am a *</label>
+      <select name="userType" required>
+        <option value="" disabled selected>Select your role</option>
+        <option value="customer"> Food Lover (Customer)</option>
+        <option value="cook"> Home Cook</option>
+      </select>
+      
+      <button type="submit" id="loginBtn">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Global variables
+  let serverOnline = false;
+  let currentUser = null;
+
+  // Navigation functions
+  function navigateToCooks() {
+    if (!serverOnline) {
+      alert(' Server is not connected. Please wait for server to come online.');
+      return;
+    }
+    window.location.href = 'cooks.html';
+  }
+
+  function handleUserAction() {
+    if (!currentUser) return;
+    
+    if (currentUser.type === 'cook') {
+      window.location.href = 'cook-profile.html';
+    } else {
+      window.location.href = 'cooks.html';
+    }
+  }
+
+  // How It Works toggle
+  function toggleHowItWorks() {
+    const section = document.getElementById('howItWorks');
+    const btn = document.getElementById('howItWorksBtn');
+    if (section.style.display === 'block') {
+      section.style.display = 'none';
+      btn.textContent = 'How It Works';
+    } else {
+      section.style.display = 'block';
+      btn.textContent = 'Close';
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Modal controls
+  const registerModal = document.getElementById('registerModal');
+  const loginModal = document.getElementById('loginModal');
+  
+  function openRegisterModal() {
+    if (!serverOnline) {
+      alert(' Server is not connected. Please wait for server to come online.');
+      return;
+    }
+    registerModal.classList.add('show');
+  }
+  
+  function openLoginModal() {
+    if (!serverOnline) {
+      alert(' Server is not connected. Please wait for server to come online.');
+      return;
+    }
+    loginModal.classList.add('show');
+  }
+  
+  document.getElementById('btnRegister').onclick = openRegisterModal;
+  document.getElementById('btnLogin').onclick = openLoginModal;
+  document.getElementById('closeRegister').onclick = () => registerModal.classList.remove('show');
+  document.getElementById('closeLogin').onclick = () => loginModal.classList.remove('show');
+  
+  // Close modal when clicking outside
+  window.onclick = e => {
+    if (e.target === registerModal) registerModal.classList.remove('show');
+    else if (e.target === loginModal) loginModal.classList.remove('show');
+  };
+
+  // Show/hide cook fields based on user type selection
+  document.getElementById('regType').addEventListener('change', e => {
+    const cookFields = document.getElementById('cookFields');
+    const specialtiesField = cookFields.querySelector('textarea[name="specialties"]');
+    const experienceField = cookFields.querySelector('input[name="experience"]');
+    
+    if (e.target.value === 'cook') {
+      cookFields.style.display = 'block';
+      specialtiesField.required = true;
+      experienceField.required = true;
+    } else {
+      cookFields.style.display = 'none';
+      specialtiesField.required = false;
+      experienceField.required = false;
+      specialtiesField.value = '';
+      experienceField.value = '';
+    }
+  });
+
+  // Registration form submission
+  document.getElementById('registerForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    
+    if (!serverOnline) {
+      alert(' Server is not connected. Please try again when server is online.');
+      return;
+    }
+    
+    const submitBtn = document.getElementById('registerBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = ' Creating Account...';
+    submitBtn.disabled = true;
+
+    try {
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      // Validate required fields
+      if (!data.name || !data.email || !data.phone || !data.address || !data.type) {
+        throw new Error('Please fill in all required fields');
+      }
+      
+      data.type = data.type.toLowerCase();
+      
+      // Handle cook-specific fields
+      if (data.type === 'cook') {
+        if (!data.specialties || !data.specialties.trim()) {
+          throw new Error('Please enter your cooking specialties');
+        }
+        if (!data.experience || data.experience === '') {
+          throw new Error('Please enter your cooking experience');
+        }
+        data.experience = parseInt(data.experience) || 0;
+        
+        if (data.experience < 0 || data.experience > 50) {
+          throw new Error('Please enter a valid cooking experience (0-50 years)');
+        }
+      } else {
+        delete data.experience;
+        delete data.specialties;
+      }
+
+      console.log(' Sending registration data:', data);
+
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const json = await response.json();
+      console.log(' Server response:', json);
+      
+      if (response.ok) {
+        alert(' Registration successful! ' + json.message);
+        localStorage.setItem('currentUser', JSON.stringify(json.user));
+        
+        e.target.reset();
+        document.getElementById('cookFields').style.display = 'none';
+        registerModal.classList.remove('show');
+        
+        // Update UI with user info
+        updateUserInterface(json.user);
+        
+        if (data.type === 'cook') {
+          setTimeout(() => {
+            window.location.href = 'cook-profile.html';
+          }, 1500);
+        } else {
+          setTimeout(() => {
+            navigateToCooks();
+          }, 1500);
+        }
+      } else {
+        alert(' Registration failed: ' + json.message);
+      }
+    } catch (error) {
+      console.error(' Registration error:', error);
+      alert(' Registration failed: ' + error.message);
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Login form submission
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    
+    if (!serverOnline) {
+      alert(' Server is not connected. Please try again when server is online.');
+      return;
+    }
+    
+    const submitBtn = document.getElementById('loginBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = ' Signing In...';
+    submitBtn.disabled = true;
+
+    try {
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      if (!data.email || !data.userType) {
+        throw new Error('Please fill in all required fields');
+      }
+      
+      data.userType = data.userType.toLowerCase();
+
+      console.log(' Sending login data:', data);
+
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const json = await response.json();
+      console.log(' Server response:', json);
+      
+      if (response.ok) {
+        alert(' Login successful! ' + json.message);
+        localStorage.setItem('currentUser', JSON.stringify(json.user));
+        
+        e.target.reset();
+        loginModal.classList.remove('show');
+        
+        // Update UI with user info
+        updateUserInterface(json.user);
+        
+        if (data.userType === 'cook') {
+          setTimeout(() => {
+            window.location.href = 'cook-profile.html';
+          }, 1500);
+        } else {
+          setTimeout(() => {
+            navigateToCooks();
+          }, 1500);
+        }
+      } else {
+        alert(' Login failed: ' + json.message);
+      }
+    } catch (error) {
+      console.error(' Login error:', error);
+      alert(' Login failed: ' + error.message);
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Become a Cook button
+  document.getElementById('btnBecomeCook').onclick = () => {
+    if (!serverOnline) {
+      alert(' Server is not connected. Please wait for server to come online.');
+      return;
+    }
+    registerModal.classList.add('show');
+    
+    const regTypeSelect = document.getElementById('regType');
+    regTypeSelect.value = 'cook';
+    
+    const cookFields = document.getElementById('cookFields');
+    cookFields.style.display = 'block';
+    
+    const specialtiesField = cookFields.querySelector('textarea[name="specialties"]');
+    const experienceField = cookFields.querySelector('input[name="experience"]');
+    specialtiesField.required = true;
+    experienceField.required = true;
+  };
+
+  // Update user interface
+  function updateUserInterface(user) {
+    currentUser = user;
+    const navActions = document.querySelector('.nav-actions');
+    const userInfo = document.getElementById('userInfo');
+    
+    if (user) {
+      navActions.style.display = 'none';
+      userInfo.style.display = 'flex';
+      
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userActionBtn').textContent = 
+        user.type === 'cook' ? 'My Profile' : 'Browse Cooks';
+      
+      // Set user avatar
+      if (user.type === 'cook' && user.profilePicUrl) {
+        document.getElementById('userAvatar').src = user.profilePicUrl;
+      } else {
+        document.getElementById('userAvatar').src = 
+          `https://via.placeholder.com/35x35/ff6347/white?text=${user.name.charAt(0)}`;
+      }
+    } else {
+      navActions.style.display = 'flex';
+      userInfo.style.display = 'none';
+    }
+  }
+
+  // Logout function
+  function logout() {
+    localStorage.removeItem('currentUser');
+    currentUser = null;
+    updateUserInterface(null);
+    alert(' Logged out successfully!');
+  }
+
+  // Server connection test
+  async function checkServerConnection() {
+    const statusElement = document.getElementById('serverStatus');
+    statusElement.style.display = 'block';
+    
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('http://localhost:5000/api/test', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log(' Server connection successful:', data);
+        serverOnline = true;
+        statusElement.textContent = ' Server Online';
+        statusElement.className = 'server-status online';
+        
+        setTimeout(() => {
+          statusElement.style.display = 'none';
+        }, 3000);
+      } else {
+        throw new Error('Server responded with error: ' + response.status);
+      }
+    } catch (error) {
+      console.error(' Server connection failed:', error);
+      serverOnline = false;
+      
+      if (error.name === 'AbortError') {
+        statusElement.textContent = ' Server Connection Timeout';
+      } else {
+        statusElement.textContent = ' Server Offline - Please start Flask server';
+      }
+      
+      statusElement.className = 'server-status offline';
+      
+      setTimeout(() => {
+        checkServerConnection();
+      }, 10000);
+    }
+  }
+
+  // Initialize page
+  window.addEventListener('load', () => {
+    console.log(' HomeMeals Connect Frontend Loaded');
+    checkServerConnection();
+    
+    // Check if user is already logged in
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      const user = JSON.parse(userData);
+      console.log(' User already logged in:', user.name, '(' + user.type + ')');
+      updateUserInterface(user);
+    }
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      registerModal.classList.remove('show');
+      loginModal.classList.remove('show');
+    }
+  });
+</script>
+</body>
+</html>
