@@ -6,20 +6,17 @@
     <title>Cook Dashboard - Food Image Upload</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
         }
-        
         .header {
             background: rgba(255,255,255,0.95);
             padding: 1rem 5%;
@@ -31,18 +28,15 @@
             z-index: 100;
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
-        
         .header h1 {
             color: #ff6347;
             font-weight: 700;
         }
-        
         .header-actions {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
-        
         .btn {
             padding: 10px 20px;
             border: none;
@@ -53,28 +47,23 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
         .btn-primary {
             background: #ff6347;
             color: white;
         }
-        
         .btn-secondary {
             background: #6c757d;
             color: white;
         }
-        
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        
         .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 20px;
         }
-        
         .dashboard-header {
             background: white;
             padding: 2rem;
@@ -82,13 +71,11 @@
             margin-bottom: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        
         .welcome-section {
             display: flex;
             align-items: center;
             margin-bottom: 2rem;
         }
-        
         .cook-avatar {
             width: 80px;
             height: 80px;
@@ -97,13 +84,11 @@
             border: 4px solid #ff6347;
             margin-right: 2rem;
         }
-        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
         }
-        
         .stat-card {
             background: linear-gradient(45deg, #ff6347, #ff7f50);
             color: white;
@@ -112,47 +97,39 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
-        
         .stat-card:hover {
             transform: translateY(-5px);
         }
-        
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
-        
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.9;
         }
-        
         .main-content {
             display: grid;
             grid-template-columns: 1fr;
             gap: 2rem;
         }
-        
         .dishes-section {
             background: white;
             padding: 2rem;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
         }
-        
         .section-title {
             font-size: 1.8rem;
             color: #333;
         }
-        
         .add-dish-btn {
             background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
@@ -163,12 +140,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
         .add-dish-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
         }
-        
         .upload-multiple-btn {
             background: linear-gradient(45deg, #007bff, #0056b3);
             color: white;
@@ -180,18 +155,15 @@
             transition: all 0.3s ease;
             margin-left: 1rem;
         }
-        
         .upload-multiple-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
         }
-        
         .dishes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
         }
-        
         .dish-card {
             border: 2px solid #f0f0f0;
             border-radius: 15px;
@@ -199,13 +171,11 @@
             transition: all 0.3s ease;
             position: relative;
         }
-        
         .dish-card:hover {
             border-color: #ff6347;
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
         .dish-image {
             width: 100%;
             height: 200px;
@@ -213,28 +183,24 @@
             border-radius: 10px;
             margin-bottom: 1rem;
         }
-        
         .dish-name {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: #333;
         }
-        
         .dish-price {
             font-size: 1.1rem;
             font-weight: 700;
             color: #ff6347;
             margin-bottom: 0.5rem;
         }
-        
         .dish-description {
             color: #666;
             font-size: 0.9rem;
             margin-bottom: 1rem;
             line-height: 1.4;
         }
-        
         .dish-meta {
             display: flex;
             justify-content: space-between;
@@ -1198,3 +1164,4 @@
     </script>
 </body>
 </html>
+
