@@ -1,2 +1,6 @@
 Flask==2.3.3
 Flask-CORS==4.0.0
+pymongo
+gunicorn==20.1.0
+Pillow
+werkzeug
