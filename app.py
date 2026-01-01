@@ -89,7 +89,7 @@ def serialize_doc(doc):
 
 # MongoDB connection
 try:
-    client = MongoClient("mongodb://localhost:27017", serverSelectionTimeoutMS=3000)
+    client = MongoClient("mongodb+srv://ravitejathangellapalli_db_user:lZAEYPUTA0Ql8Fi6@cluster0.yn2qg7k.mongodb.net/?appName=Cluster0", serverSelectionTimeoutMS=3000)
     client.server_info()
     db = client['homemealsdb']
     users_col = db['users']
@@ -1208,3 +1208,4 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, port=port, host='0.0.0.0')
+
