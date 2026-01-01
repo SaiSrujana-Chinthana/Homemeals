@@ -6,6 +6,7 @@ import random, json, os, uuid, base64
 from bson import ObjectId
 from werkzeug.utils import secure_filename
 import statistics
+import certifi
 
 # Optional: Pillow for image optimization (pip install Pillow)
 try:
@@ -89,7 +90,17 @@ def serialize_doc(doc):
 
 # MongoDB connection
 try:
-    client = MongoClient("mongodb+srv://ravitejathangellapalli_db_user:lZAEYPUTA0Ql8Fi6@cluster0.yn2qg7k.mongodb.net/?appName=Cluster0", serverSelectionTimeoutMS=3000)
+    import os
+import certifi
+
+# MongoDB connection
+try:
+    MONGO_URI = os.environ.get('mongodb+srv://ravitejathangellapalli_db_user:lZAEYPUTA0Ql8Fi6@cluster0.yn2qg7k.mongodb.net/?appName=Cluster0', 'mongodb://localhost:27017')
+    client = MongoClient(
+        MONGO_URI, 
+        serverSelectionTimeoutMS=5000,
+        tlsCAFile=certifi.where()
+    )
     client.server_info()
     db = client['homemealsdb']
     users_col = db['users']
@@ -1208,4 +1219,5 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, port=port, host='0.0.0.0')
+
 
