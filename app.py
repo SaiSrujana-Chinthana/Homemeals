@@ -1202,12 +1202,9 @@ def login():
             return jsonify({'message': 'User not found. Please register first.'}), 404
     except Exception as e:
         return jsonify({'message': f'Login error: {str(e)}'}), 500
-
 if __name__ == '__main__':
     init_sample_data()
-    print("\nHomeMeals Connect Backend Starting with UPLOADED IMAGES")
-    print("PROFILE PICTURES ROUTE: /static/profiles/<filename>")
-    print("FOOD PICTURES ROUTE: /static/food/<filename>")
-    print("ADD DISH: POST /api/dishes/add (multipart/form-data)")
-    print("BULK FOOD IMAGES: POST /api/dishes/bulk-upload-images (multipart/form-data)")
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    print("\nHomeMeals Connect Backend Starting")
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, port=port, host='0.0.0.0')
